@@ -1,0 +1,157 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+h1{
+    font-family: 'Quicksand', sans-serif;
+}
+
+#game_data{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    margin: 0px auto;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 60%;
+    max-width: 450px;
+}
+
+#stars{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#stars > ul{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0px;
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+#stars > ul > li{
+    margin-right: 0.1em;
+}
+
+#memory_board{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    /*position: relative;*/
+    background: #00CDB9; /* For browsers that do not support gradients */    
+    background: -webkit-linear-gradient(left top, #00CDB9, #AB7FCF); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #00CDB9, #AB7FCF); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #00CDB9, #AB7FCF); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #00CDB9, #AB7FCF);
+    border-radius: 0.5em;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    width: 90%;
+    max-width: 450px;
+    height: 100%;
+    max-height: 450px;
+    padding: 0.5em;
+    margin: 0 auto;
+    -webkit-box-shadow: 5px 5px 11px 3px rgba(149,149,158,1);
+    -moz-box-shadow: 5px 5px 11px 3px rgba(149,149,158,1);
+    box-shadow: 5px 5px 11px 3px rgba(149,149,158,1);  
+}
+
+#container > header{
+    margin: 0px auto;
+    text-align: center;
+}
+
+#memory_board > div{
+    display: flex;
+    /*flex-basis: 15%;*/
+    flex: 0 1 auto;
+    width: 2.4em;
+    height: 2.4em;
+    background: #2B3E4A;
+    border-radius: 0.3em;
+    -moz-border-radius: 0.3em;
+    -webkit-border-radius: 0.3em;
+    margin: 0.5em;
+    font-size: 2em;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+}
+
+#reload:hover{
+    cursor: pointer;
+}
+
+/*
+.tile_content{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    vertical-align: middle;
+}*/
+
+@media all and (max-width: 510px) {
+    #memory_board{
+        flex-flow: row wrap;
+		max-width: 90%;
+		height: 70%;
+		justify-content: space-around;
+    }
+
+    #game_data{
+        width: 80%;
+    }
+    
+    #memory_board > div {
+        flex-shrink: 0;
+		/*width: 2.0em;
+		height: 2.0em;*/
+		margin: 8px;
+  }
+}
+
+@media all and (max-width: 430px) {
+    #memory_board{
+        flex-flow: row wrap;
+		max-width: 90%;
+		height: 70%;
+		justify-content: space-around;
+    }
+
+    #game_data{
+        width: 80%;
+    }
+    
+    #memory_board > div {
+        flex-shrink: 0;
+		width: 2.0em;
+		height: 2.0em;
+		margin: 8px;
+  }
+}
+
+@media all and (max-width: 355px) {
+    #memory_board{
+        flex-flow: row wrap;
+		max-width: 90%;
+		height: 70%;
+		justify-content: space-around;
+    }
+
+    #game_data{
+        width: 80%;
+    }
+    
+    #memory_board > div {
+        flex-shrink: 0;
+		width: 1.75em;
+		height: 1.75em;
+		margin: 8px;
+  }
+}
