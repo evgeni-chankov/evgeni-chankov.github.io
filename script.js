@@ -14,6 +14,11 @@ var tilesFlipped = 0;
 var turns = 0;
 //Variable showing player performance in terms of stars
 var stars = 3;
+//Variables for the timer
+var timerVar = setInterval(countTimer, 1000);
+var totalSeconds = 0;
+var startClock = true;
+var startClockOnPlayerClick = [];
 
 //Create shuffle method and assign to Array objects
 function randomizeCardTypes(aCardArray) {
@@ -41,12 +46,11 @@ function newBoard(){
     var output = '';
     turns = 0;
     stars = 3;
-    countTimer();
     randomizeCardTypes(memoryArray);
     for(var i=0; i < memoryArray.length; i++){
-        output += '<div id="tile_'+i+'" onclick="memoryFlipTile(this,\''+memoryArray[i]+'\')"></div>';
+        output += '<div id="tile_'+i+'" onclick="memoryFlipTile(this,\''+memoryArray[i]+'\');"></div>';
     }
-    setInterval('showPerformance(turns)', 1000);
+	setInterval('showPerformance(turns)', 1000);
     document.getElementById('memory_board').innerHTML = output;
 }
 
@@ -59,9 +63,11 @@ function memoryFlipTile(tile, val){
         tile.innerHTML = val;
         if(memoryValues.length == 0){
             memoryValues.push(val);
+			startClockOnPlayerClick.push(val);
             memoryTileIds.push(tile.id);
         }else if(memoryValues.length == 1){
             memoryValues.push(val);
+			
             memoryTileIds.push(tile.id);
             //If the last two flipped cards are the same
             if(memoryValues[0] == memoryValues[1]){
@@ -132,7 +138,7 @@ function showPerformance(turns) {
 
 //start timer countdown (not completely functional yet)
 //TODO: implement countdown option
-var time = 60 * 1;
+/*var time = 60 * 1;
 var display = document.querySelector('#clock');
 function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
@@ -150,23 +156,24 @@ function startTimer(duration, display) {
         }
         console.log(display.textContent);
     }, 1000);
-}
+}*/
 
 //Regular time counter
-var timerVar = setInterval(countTimer, 1000);
-var totalSeconds = 0;
 function countTimer() {
-    ++totalSeconds;
-    var hour = Math.floor(totalSeconds /3600);
-    var minute = Math.floor((totalSeconds - hour*3600)/60);
-    var seconds = totalSeconds - (hour*3600 + minute*60);
-    var clock = hour + ":" + minute + ":" + seconds;
-    document.getElementById("clock").innerHTML = clock;// to add in case of required pause or stop functionlity + ' ' +'<i class="fa fa-pause-circle-o" aria-hidden="true" onclick="clearInterval(timerVar);"></i>'
-    return clock;
+	if(startClock && startClockOnPlayerClick.length > 0){
+		++totalSeconds;
+		var hour = Math.floor(totalSeconds /3600);
+		var minute = Math.floor((totalSeconds - hour*3600)/60);
+		var seconds = totalSeconds - (hour*3600 + minute*60).toFixed(2);
+		var clock = minute + ":" + seconds; //To add if hours needed: hour + ":" +
+		document.getElementById("clock").innerHTML = clock;// to add in case of required pause or stop functionlity + ' ' +'<i class="fa fa-pause-circle-o" aria-hidden="true" onclick="clearInterval(timerVar);"></i>'
+		console.log('countTimer function ran.');
+		return clock;
+	}
 }
 
 //Refresh game data div every second
-function autoRefreshDiv(divName, functionName) {
+/*function autoRefreshDiv(divName, functionName) {
     $(divName).load(functionName);
     console.log("Refreshed game data!");
-}
+}*/
