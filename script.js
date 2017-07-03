@@ -1,9 +1,9 @@
 //Initialize variables easy difficulty
-var memoryArray = ['fa fa-motorcycle','fa fa-motorcycle','fa fa-bath','fa fa-bath','fa fa-car','fa fa-car','fa fa-bell-o','fa fa-bell-o','fa fa-bug','fa fa-bug','fa fa-bomb','fa fa-bomb','fa fa-university','fa fa-university','fa fa-key','fa fa-key'];
+var memoryArrayEasy = ['fa fa-motorcycle','fa fa-motorcycle','fa fa-bath','fa fa-bath','fa fa-car','fa fa-car','fa fa-bell-o','fa fa-bell-o','fa fa-bug','fa fa-bug','fa fa-bomb','fa fa-bomb','fa fa-university','fa fa-university','fa fa-key','fa fa-key'];
 //Initialize variables medium difficulty
-//var memoryArrayMedium = ['fa fa-motorcycle', 'fa fa-motorcycle', 'fa fa-bath', 'fa fa-bath', 'fa fa-car', 'fa fa-car', 'fa fa-bell-o', 'fa fa-bell-o', 'fa fa-bug', 'fa fa-bug', 'fa fa-bomb', 'fa fa-bomb', 'fa fa-university', 'fa fa-university', 'fa fa-key', 'fa fa-key'];
+var memoryArrayMedium = ['fa fa-handshake-o', 'fa fa-handshake-o', 'fa fa-hand-lizard-o', 'fa fa-hand-lizard-o', 'fa fa-hand-scissors-o', 'fa fa-hand-scissors-o', 'fa fa-hand-o-left', 'fa fa-hand-o-left', 'fa fa-hand-o-right', 'fa fa-hand-o-right', 'fa fa-hand-peace-o', 'fa fa-hand-peace-o', 'fa fa-hand-spock-o', 'fa fa-hand-spock-o', 'fa fa-hand-paper-o', 'fa fa-hand-paper-o'];
 //Initialize variables hard difficulty
-//var memoryArrayHard = ['fa fa-motorcycle', 'fa fa-motorcycle', 'fa fa-bath', 'fa fa-bath', 'fa fa-car', 'fa fa-car', 'fa fa-bell-o', 'fa fa-bell-o', 'fa fa-bug', 'fa fa-bug', 'fa fa-bomb', 'fa fa-bomb', 'fa fa-university', 'fa fa-university', 'fa fa-key', 'fa fa-key'];
+var memoryArrayHard = ['fa fa-motorcycle', 'fa fa-motorcycle', 'fa fa-bath', 'fa fa-bath', 'fa fa-car', 'fa fa-car', 'fa fa-bell-o', 'fa fa-bell-o', 'fa fa-bug', 'fa fa-bug', 'fa fa-bomb', 'fa fa-bomb', 'fa fa-university', 'fa fa-university', 'fa fa-key', 'fa fa-key'];
 //Temporary array keeping track of tile values being clicked; emptied after every turn
 var memoryValues = [];
 //Temporary array keeping track of tile ids being clicked; emptied after every turn
@@ -19,6 +19,15 @@ var timerVar = setInterval(countTimer, 1000);
 var totalSeconds = 0;
 var startClock = true;
 var startClockOnPlayerClick = [];
+
+
+//Determine game mode
+function getGameMode() {
+    var gameDifficulty = document.getElementById("game-options").value;
+    document.getElementById("show-difficulty").innerHTML = gameDifficulty;
+	console.log(gameDifficulty);
+	return gameDifficulty;
+}
 
 //Create shuffle method and assign to Array objects
 function randomizeCardTypes(aCardArray) {
@@ -40,12 +49,29 @@ function randomizeCardTypes(aCardArray) {
     return aCardArray;
 }
 
+//Determine which symbol array will be used
+function determineMemoryArray(gameMode){
+	if(gameMode == 'regular'){
+		memoryArray = memoryArrayEasy;
+	} else if(gameMode == 'hardcore'){
+		memoryArray = memoryArrayMedium;
+	} else {
+		memoryArray = memoryArrayHard;// TODO: add OMG play mode
+	}
+	return memoryArray;
+}
+
 //Create new board
 function newBoard(){
     tilesFlipped = 0;
     var output = '';
     turns = 0;
     stars = 3;
+	//var gameMode = getGameMode();
+	var gameMode = document.getElementById('show-difficulty').innerHTML;
+	console.log('newBoard ran and gameMode is '+ gameMode);
+	memoryArray = determineMemoryArray(gameMode);
+	console.log('based on the chosen game mode, the memory array is: '+ memoryArray);
     randomizeCardTypes(memoryArray);
     for(var i=0; i < memoryArray.length; i++){
         output += '<div id="tile_'+i+'" onclick="memoryFlipTile(this,\''+memoryArray[i]+'\');"></div>';
@@ -67,9 +93,14 @@ function showModal(achievedTime, numberStars, numberMoves){
 	document.getElementById('modal-body').innerHTML = 'Board cleared in '+achievedTime+' and with '+numberStars+' stars. Also, you made '+numberMoves+' moves.';
 }
 
-//Close modal on click
+//Close player performance modal on click
 function closeModal(){
 	document.getElementById('display_performance').style.display = "none";
+}
+
+//Close game difficulty modal on click
+function closeModeModal(){
+	document.getElementById('get_playing_mode').style.display = "none";
 }
 
 //Create function for correct card animation
@@ -137,6 +168,22 @@ function addOrRemoveClass(el1,el2){
 	}
 }
 
+//Flip boards back if there is no match
+function flipToBack(){
+	var firstTile = document.getElementById(memoryTileIds[0]);
+	var secondTile = document.getElementById(memoryTileIds[1]);
+	addOrRemoveClass(firstTile,secondTile);
+	firstTile.style.background = '#2B3E4A';
+	firstTile.innerHTML = '';
+	secondTile.style.background = '#2B3E4A';
+	secondTile.innerHTML = '';
+	turns += 1;
+	//console.log("Unsuccessful turn! Adding one to turns to a total of: "+turns);
+	//Empty both arrays
+	memoryValues = [];
+	memoryTileIds = [];
+}
+
 //Create flip tile function
 function memoryFlipTile(tile, val){
     if(tile.innerHTML == '' && memoryValues.length < 2){
@@ -156,7 +203,6 @@ function memoryFlipTile(tile, val){
                 tilesFlipped += 2;
                 turns += 1;
 				animateCorrect(memoryTileIds[0],memoryTileIds[1]);
-                //console.log("Successful turn! We add one to turns, to a total of: "+turns);
                 //Empty both arrays
                 memoryValues = [];
                 memoryTileIds = [];
@@ -164,26 +210,10 @@ function memoryFlipTile(tile, val){
                 if (tilesFlipped == memoryArray.length) {
                     clearInterval(timerVar);
                     var achievedTime = clock.innerHTML;
-                    console.log(achievedTime);
-                    console.log(stars);
 					showModal(achievedTime,stars,turns);
                 }
             //If the last two flipped cards are not the same, flip them back over
             } else {
-                function flipToBack(){
-					var firstTile = document.getElementById(memoryTileIds[0]);
-                    var secondTile = document.getElementById(memoryTileIds[1]);
-					addOrRemoveClass(firstTile,secondTile);
-                    firstTile.style.background = '#2B3E4A';
-                    firstTile.innerHTML = '';
-                    secondTile.style.background = '#2B3E4A';
-                    secondTile.innerHTML = '';
-                    turns += 1;
-                    //console.log("Unsuccessful turn! Adding one to turns to a total of: "+turns);
-                    //Empty both arrays
-                    memoryValues = [];
-                    memoryTileIds = [];
-                }
                 setTimeout(flipToBack, 700);
             }
         }
@@ -250,9 +280,3 @@ function countTimer() {
 		return clock;
 	}
 }
-
-//Refresh game data div every second
-/*function autoRefreshDiv(divName, functionName) {
-    $(divName).load(functionName);
-    console.log("Refreshed game data!");
-}*/
